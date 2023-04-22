@@ -1,0 +1,27 @@
+# permissions for end users to view commandhealthchecks.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: commandhealthcheck-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: operator
+    app.kubernetes.io/part-of: operator
+    app.kubernetes.io/managed-by: kustomize
+  name: commandhealthcheck-viewer-role
+rules:
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - commandhealthchecks
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - commandhealthchecks/status
+  verbs:
+  - get

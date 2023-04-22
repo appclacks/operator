@@ -1,0 +1,27 @@
+# permissions for end users to view tcphealthchecks.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: tcphealthcheck-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: operator2
+    app.kubernetes.io/part-of: operator2
+    app.kubernetes.io/managed-by: kustomize
+  name: tcphealthcheck-viewer-role
+rules:
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - tcphealthchecks
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - tcphealthchecks/status
+  verbs:
+  - get

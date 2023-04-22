@@ -1,0 +1,31 @@
+# permissions for end users to edit dnshealthchecks.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: dnshealthcheck-editor-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: operator2
+    app.kubernetes.io/part-of: operator2
+    app.kubernetes.io/managed-by: kustomize
+  name: dnshealthcheck-editor-role
+rules:
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - dnshealthchecks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - dnshealthchecks/status
+  verbs:
+  - get

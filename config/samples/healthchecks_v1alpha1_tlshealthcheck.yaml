@@ -1,0 +1,12 @@
+apiVersion: healthchecks.appclacks.com/v1alpha1
+kind: TLSHealthcheck
+metadata:
+  labels:
+    app.kubernetes.io/name: tlshealthcheck
+    app.kubernetes.io/instance: tlshealthcheck-sample
+    app.kubernetes.io/part-of: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: operator
+  name: tlshealthcheck-sample
+spec:
+  # TODO(user): Add fields here

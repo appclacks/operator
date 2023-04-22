@@ -1,0 +1,12 @@
+apiVersion: healthchecks.appclacks.com/v1alpha1
+kind: TCPHealthcheck
+metadata:
+  labels:
+    app.kubernetes.io/name: tcphealthcheck
+    app.kubernetes.io/instance: tcphealthcheck-sample
+    app.kubernetes.io/part-of: operator2
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: operator2
+  name: tcphealthcheck-sample
+spec:
+  # TODO(user): Add fields here
