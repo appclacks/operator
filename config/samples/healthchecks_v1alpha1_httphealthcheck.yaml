@@ -1,0 +1,21 @@
+apiVersion: healthchecks.appclacks.com/v1alpha1
+kind: HTTPHealthcheck
+metadata:
+  labels:
+    app.kubernetes.io/name: httphealthcheck
+    app.kubernetes.io/instance: httphealthcheck-sample
+    app.kubernetes.io/part-of: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: operator
+  name: httphealthcheck-sample
+spec:
+  description: "hello from kubernetes"
+  interval: 30s
+  enabled: true
+  timeout: 5s
+  validStatus: [200, 203]
+  port: 443
+  protocol: https
+  redirect: true
+  method: GET
+  target: mcorbin.fr

@@ -1,0 +1,12 @@
+apiVersion: healthchecks.appclacks.com/v1alpha1
+kind: CommandHealthcheck
+metadata:
+  labels:
+    app.kubernetes.io/name: commandhealthcheck
+    app.kubernetes.io/instance: commandhealthcheck-sample
+    app.kubernetes.io/part-of: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: operator
+  name: commandhealthcheck-sample
+spec:
+  # TODO(user): Add fields here
