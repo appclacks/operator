@@ -1,9 +1,8 @@
 apiVersion: healthchecks.appclacks.com/v1alpha1
 kind: DNSHealthcheck
 metadata:
-  labels:
-    app.kubernetes.io/created-by: operator
   name: dnshealthcheck-sample
+  namespace: appclacks
 spec:
   domain: mcorbin.fr
   interval: 35s

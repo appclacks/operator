@@ -1,0 +1,208 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: appclacks-operator
+rules:
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - commandhealthchecks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - commandhealthchecks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - commandhealthchecks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - dnshealthchecks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - dnshealthchecks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - dnshealthchecks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - httphealthchecks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - httphealthchecks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - httphealthchecks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - tcphealthchecks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - tcphealthchecks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - tcphealthchecks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - tlshealthchecks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - tlshealthchecks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - healthchecks.appclacks.com
+  resources:
+  - tlshealthchecks/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: appclakcs-operator
+  name: appclacks-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: appclacks-operator
+subjects:
+- kind: ServiceAccount
+  name: appclacks-operator
+  namespace: appclacks
+---
+# permissions to do leader election.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/name: appclacks-operator
+  name: appclacks-operator-leader-election
+  namespace: appclacks
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: appclacks-operator
+  name: appclacks-operator-leader-election
+  namespace: appclacks
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: appclacks-operator-leader-election
+subjects:
+- kind: ServiceAccount
+  name: appclacks-operator
+  namespace: appclacks
