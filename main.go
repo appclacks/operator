@@ -132,8 +132,9 @@ func main() {
 		os.Exit(1)
 	}
 	if err = (&controllers.CommandHealthcheckReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:    mgr.GetClient(),
+		Scheme:    mgr.GetScheme(),
+		Appclacks: client,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "CommandHealthcheck")
 		os.Exit(1)

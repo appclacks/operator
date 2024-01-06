@@ -3,5 +3,12 @@ kind: TCPHealthcheck
 metadata:
   name: tcphealthcheck-sample
   namespace: appclacks
+  labels:
+    example: label
 spec:
-  
+  interval: 35s
+  timeout: 10s
+  description: "tcp health check example"
+  enabled: true
+  target: google.com
+  port: 443

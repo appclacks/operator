@@ -1,12 +1,20 @@
 apiVersion: healthchecks.appclacks.com/v1alpha1
 kind: TLSHealthcheck
 metadata:
-  labels:
-    app.kubernetes.io/name: tlshealthcheck
-    app.kubernetes.io/instance: tlshealthcheck-sample
-    app.kubernetes.io/part-of: operator
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/created-by: operator
   name: tlshealthcheck-sample
+  namespace: appclacks
+  labels:
+    example: label
 spec:
-  # TODO(user): Add fields here
+  interval: 35s
+  timeout: 10s
+  description: "tls health check example"
+  enabled: true
+  target: google.com
+  port: 443
+  serverName: google.com
+  # key: "/path/to/cert.key"
+  # cert: "/path/to/cert.pem"
+  # cacert: "/path/to/cacert.pem"
+  # insecure: true
+  # expirationDelay: 24h
