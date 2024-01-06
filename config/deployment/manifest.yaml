@@ -44,8 +44,8 @@ spec:
               name: appclacks-credentials
         args:
         - --leader-elect
-        image: appclacks/operator:v0.0.2
-        name: manager
+        image: appclacks/operator:v0.0.3
+        name: appclacks-operator
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
