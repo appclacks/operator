@@ -7,3 +7,5 @@ spec:
   domain: mcorbin.fr
   interval: 35s
   timeout: 10s
+  description: "dns health check example"
+  enabled: true
