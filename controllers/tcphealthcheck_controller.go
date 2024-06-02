@@ -19,7 +19,7 @@ package controllers
 import (
 	"context"
 
-	goclient "github.com/appclacks/cli/client"
+	goclient "github.com/appclacks/go-client"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"

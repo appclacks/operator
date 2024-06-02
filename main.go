@@ -24,7 +24,7 @@ import (
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
-	goclient "github.com/appclacks/cli/client"
+	goclient "github.com/appclacks/go-client"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -93,7 +93,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	client, err := goclient.New(appclacksURL)
+	client, err := goclient.New()
 	if err != nil {
 		setupLog.Error(err, "unable to build appclacks client")
 		os.Exit(1)

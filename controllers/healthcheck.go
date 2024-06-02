@@ -8,8 +8,7 @@ import (
 	"time"
 
 	appclackscomv1alpha1 "appclacks.com/operator/api/v1alpha1"
-	goclient "github.com/appclacks/cli/client"
-	apitypes "github.com/appclacks/go-types"
+	goclient "github.com/appclacks/go-client"
 	"github.com/go-logr/logr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -25,14 +24,14 @@ const (
 func createHealthcheck(ctx context.Context, client client.Client, appclacks *goclient.Client, check client.Object) error {
 	switch healthcheck := check.(type) {
 	case *appclackscomv1alpha1.CommandHealthcheck:
-		payload := apitypes.CreateCommandHealthcheckInput{
+		payload := goclient.CreateCommandHealthcheckInput{
 			Name:        healthcheck.Name,
 			Description: healthcheck.Spec.Description,
 			Labels:      healthcheck.Labels,
 			Timeout:     healthcheck.Spec.Timeout,
 			Interval:    healthcheck.Spec.Interval,
 			Enabled:     healthcheck.Spec.Enabled,
-			HealthcheckCommandDefinition: apitypes.HealthcheckCommandDefinition{
+			HealthcheckCommandDefinition: goclient.HealthcheckCommandDefinition{
 				Command:   healthcheck.Spec.Command,
 				Arguments: healthcheck.Spec.Arguments,
 			},
@@ -46,14 +45,14 @@ func createHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 		}
 		healthcheck.Status.State = created
 	case *appclackscomv1alpha1.HTTPHealthcheck:
-		payload := apitypes.CreateHTTPHealthcheckInput{
+		payload := goclient.CreateHTTPHealthcheckInput{
 			Name:        healthcheck.Name,
 			Description: healthcheck.Spec.Description,
 			Labels:      healthcheck.Labels,
 			Timeout:     healthcheck.Spec.Timeout,
 			Interval:    healthcheck.Spec.Interval,
 			Enabled:     healthcheck.Spec.Enabled,
-			HealthcheckHTTPDefinition: apitypes.HealthcheckHTTPDefinition{
+			HealthcheckHTTPDefinition: goclient.HealthcheckHTTPDefinition{
 				ValidStatus: healthcheck.Spec.ValidStatus,
 				Target:      healthcheck.Spec.Target,
 				Method:      healthcheck.Spec.Method,
@@ -82,14 +81,14 @@ func createHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 		}
 		healthcheck.Status.State = created
 	case *appclackscomv1alpha1.TLSHealthcheck:
-		payload := apitypes.CreateTLSHealthcheckInput{
+		payload := goclient.CreateTLSHealthcheckInput{
 			Name:        healthcheck.Name,
 			Description: healthcheck.Spec.Description,
 			Labels:      healthcheck.Labels,
 			Timeout:     healthcheck.Spec.Timeout,
 			Interval:    healthcheck.Spec.Interval,
 			Enabled:     healthcheck.Spec.Enabled,
-			HealthcheckTLSDefinition: apitypes.HealthcheckTLSDefinition{
+			HealthcheckTLSDefinition: goclient.HealthcheckTLSDefinition{
 				Target:          healthcheck.Spec.Target,
 				Port:            healthcheck.Spec.Port,
 				Key:             healthcheck.Spec.Key,
@@ -109,14 +108,14 @@ func createHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 		}
 		healthcheck.Status.State = created
 	case *appclackscomv1alpha1.TCPHealthcheck:
-		payload := apitypes.CreateTCPHealthcheckInput{
+		payload := goclient.CreateTCPHealthcheckInput{
 			Name:        healthcheck.Name,
 			Description: healthcheck.Spec.Description,
 			Labels:      healthcheck.Labels,
 			Timeout:     healthcheck.Spec.Timeout,
 			Interval:    healthcheck.Spec.Interval,
 			Enabled:     healthcheck.Spec.Enabled,
-			HealthcheckTCPDefinition: apitypes.HealthcheckTCPDefinition{
+			HealthcheckTCPDefinition: goclient.HealthcheckTCPDefinition{
 				Target:     healthcheck.Spec.Target,
 				Port:       healthcheck.Spec.Port,
 				ShouldFail: healthcheck.Spec.ShouldFail,
@@ -131,14 +130,14 @@ func createHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 		}
 		healthcheck.Status.State = created
 	case *appclackscomv1alpha1.DNSHealthcheck:
-		payload := apitypes.CreateDNSHealthcheckInput{
+		payload := goclient.CreateDNSHealthcheckInput{
 			Name:        healthcheck.Name,
 			Description: healthcheck.Spec.Description,
 			Labels:      healthcheck.Labels,
 			Timeout:     healthcheck.Spec.Timeout,
 			Interval:    healthcheck.Spec.Interval,
 			Enabled:     healthcheck.Spec.Enabled,
-			HealthcheckDNSDefinition: apitypes.HealthcheckDNSDefinition{
+			HealthcheckDNSDefinition: goclient.HealthcheckDNSDefinition{
 				Domain:      healthcheck.Spec.Domain,
 				ExpectedIPs: healthcheck.Spec.ExpectedIPs,
 			},
@@ -163,7 +162,7 @@ func createHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 	return nil
 }
 
-func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goclient.Client, check client.Object, existingCheck apitypes.Healthcheck) error {
+func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goclient.Client, check client.Object, existingCheck goclient.Healthcheck) error {
 	// the healthcheck does not contain finalizers: should be added
 	k8sUpdate := false
 	if !controllerutil.ContainsFinalizer(check, finalizerName) {
@@ -173,7 +172,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 
 	switch healthcheck := check.(type) {
 	case *appclackscomv1alpha1.CommandHealthcheck:
-		definition, ok := existingCheck.Definition.(apitypes.HealthcheckCommandDefinition)
+		definition, ok := existingCheck.Definition.(goclient.HealthcheckCommandDefinition)
 		if !ok {
 			return errors.New("invalid dns healthcheck definition")
 		}
@@ -184,7 +183,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Spec.Enabled != existingCheck.Enabled ||
 			healthcheck.Spec.Command != definition.Command ||
 			!reflect.DeepEqual(healthcheck.Spec.Arguments, definition.Arguments) {
-			payload := apitypes.UpdateCommandHealthcheckInput{
+			payload := goclient.UpdateCommandHealthcheckInput{
 				ID:          existingCheck.ID,
 				Name:        healthcheck.Name,
 				Description: healthcheck.Spec.Description,
@@ -192,7 +191,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 				Timeout:     healthcheck.Spec.Timeout,
 				Interval:    healthcheck.Spec.Interval,
 				Enabled:     healthcheck.Spec.Enabled,
-				HealthcheckCommandDefinition: apitypes.HealthcheckCommandDefinition{
+				HealthcheckCommandDefinition: goclient.HealthcheckCommandDefinition{
 					Command:   healthcheck.Spec.Command,
 					Arguments: healthcheck.Spec.Arguments,
 				},
@@ -206,7 +205,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Status.State = created
 		}
 	case *appclackscomv1alpha1.HTTPHealthcheck:
-		definition, ok := existingCheck.Definition.(apitypes.HealthcheckHTTPDefinition)
+		definition, ok := existingCheck.Definition.(goclient.HealthcheckHTTPDefinition)
 		if !ok {
 			return errors.New("invalid HTTP healthcheck definition")
 		}
@@ -232,7 +231,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Spec.Insecure != definition.Insecure ||
 			healthcheck.Spec.ServerName != definition.ServerName ||
 			healthcheck.Spec.Host != definition.Host {
-			payload := apitypes.UpdateHTTPHealthcheckInput{
+			payload := goclient.UpdateHTTPHealthcheckInput{
 				ID:          existingCheck.ID,
 				Name:        healthcheck.Name,
 				Description: healthcheck.Spec.Description,
@@ -240,7 +239,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 				Timeout:     healthcheck.Spec.Timeout,
 				Interval:    healthcheck.Spec.Interval,
 				Enabled:     healthcheck.Spec.Enabled,
-				HealthcheckHTTPDefinition: apitypes.HealthcheckHTTPDefinition{
+				HealthcheckHTTPDefinition: goclient.HealthcheckHTTPDefinition{
 					ValidStatus: healthcheck.Spec.ValidStatus,
 					Target:      healthcheck.Spec.Target,
 					Method:      healthcheck.Spec.Method,
@@ -269,7 +268,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Status.State = created
 		}
 	case *appclackscomv1alpha1.TLSHealthcheck:
-		definition, ok := existingCheck.Definition.(apitypes.HealthcheckTLSDefinition)
+		definition, ok := existingCheck.Definition.(goclient.HealthcheckTLSDefinition)
 		if !ok {
 			return errors.New("invalid TLS healthcheck definition")
 		}
@@ -286,7 +285,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Spec.ServerName != definition.ServerName ||
 			healthcheck.Spec.Insecure != definition.Insecure ||
 			healthcheck.Spec.ExpirationDelay != definition.ExpirationDelay {
-			payload := apitypes.UpdateTLSHealthcheckInput{
+			payload := goclient.UpdateTLSHealthcheckInput{
 				ID:          existingCheck.ID,
 				Name:        healthcheck.Name,
 				Description: healthcheck.Spec.Description,
@@ -294,7 +293,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 				Timeout:     healthcheck.Spec.Timeout,
 				Interval:    healthcheck.Spec.Interval,
 				Enabled:     healthcheck.Spec.Enabled,
-				HealthcheckTLSDefinition: apitypes.HealthcheckTLSDefinition{
+				HealthcheckTLSDefinition: goclient.HealthcheckTLSDefinition{
 					Target:          healthcheck.Spec.Target,
 					Port:            healthcheck.Spec.Port,
 					Key:             healthcheck.Spec.Key,
@@ -314,7 +313,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Status.State = created
 		}
 	case *appclackscomv1alpha1.TCPHealthcheck:
-		definition, ok := existingCheck.Definition.(apitypes.HealthcheckTCPDefinition)
+		definition, ok := existingCheck.Definition.(goclient.HealthcheckTCPDefinition)
 		if !ok {
 			return errors.New("invalid TCP healthcheck definition")
 		}
@@ -326,7 +325,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Spec.Target != definition.Target ||
 			healthcheck.Spec.Port != definition.Port ||
 			healthcheck.Spec.ShouldFail != definition.ShouldFail {
-			payload := apitypes.UpdateTCPHealthcheckInput{
+			payload := goclient.UpdateTCPHealthcheckInput{
 				ID:          existingCheck.ID,
 				Name:        healthcheck.Name,
 				Description: healthcheck.Spec.Description,
@@ -334,7 +333,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 				Timeout:     healthcheck.Spec.Timeout,
 				Interval:    healthcheck.Spec.Interval,
 				Enabled:     healthcheck.Spec.Enabled,
-				HealthcheckTCPDefinition: apitypes.HealthcheckTCPDefinition{
+				HealthcheckTCPDefinition: goclient.HealthcheckTCPDefinition{
 					Target:     healthcheck.Spec.Target,
 					Port:       healthcheck.Spec.Port,
 					ShouldFail: healthcheck.Spec.ShouldFail,
@@ -349,7 +348,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Status.State = created
 		}
 	case *appclackscomv1alpha1.DNSHealthcheck:
-		definition, ok := existingCheck.Definition.(apitypes.HealthcheckDNSDefinition)
+		definition, ok := existingCheck.Definition.(goclient.HealthcheckDNSDefinition)
 		if !ok {
 			return errors.New("invalid dns healthcheck definition")
 		}
@@ -360,7 +359,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 			healthcheck.Spec.Enabled != existingCheck.Enabled ||
 			healthcheck.Spec.Domain != definition.Domain ||
 			!reflect.DeepEqual(healthcheck.Spec.ExpectedIPs, definition.ExpectedIPs) {
-			payload := apitypes.UpdateDNSHealthcheckInput{
+			payload := goclient.UpdateDNSHealthcheckInput{
 				ID:          existingCheck.ID,
 				Name:        healthcheck.Name,
 				Description: healthcheck.Spec.Description,
@@ -368,7 +367,7 @@ func updateHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 				Timeout:     healthcheck.Spec.Timeout,
 				Interval:    healthcheck.Spec.Interval,
 				Enabled:     healthcheck.Spec.Enabled,
-				HealthcheckDNSDefinition: apitypes.HealthcheckDNSDefinition{
+				HealthcheckDNSDefinition: goclient.HealthcheckDNSDefinition{
 					Domain:      healthcheck.Spec.Domain,
 					ExpectedIPs: healthcheck.Spec.ExpectedIPs,
 				},
@@ -397,7 +396,7 @@ func deleteHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 		if exists {
 			ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
 			defer cancel()
-			_, err := appclacks.DeleteHealthcheck(ctx, apitypes.DeleteHealthcheckInput{
+			_, err := appclacks.DeleteHealthcheck(ctx, goclient.DeleteHealthcheckInput{
 				ID: id,
 			})
 
@@ -417,7 +416,7 @@ func deleteHealthcheck(ctx context.Context, client client.Client, appclacks *goc
 func reconcile(ctx context.Context, log logr.Logger, client client.Client, appclacks *goclient.Client, check client.Object, name string) error {
 	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
-	existingCheck, getError := appclacks.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
+	existingCheck, getError := appclacks.GetHealthcheck(ctx, goclient.GetHealthcheckInput{
 		Identifier: name,
 	})
 
