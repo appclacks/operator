@@ -3,7 +3,7 @@ module appclacks.com/operator
 go 1.22.0
 
 require (
-	github.com/appclacks/go-client v0.0.0-20240602163908-0de41c983ab7
+	github.com/appclacks/go-client v0.0.0-20240715201443-0ce681171dc2
 	github.com/go-logr/logr v1.4.2
 	github.com/onsi/ginkgo/v2 v2.17.2
 	github.com/onsi/gomega v1.33.1

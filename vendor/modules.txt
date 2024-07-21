@@ -1,4 +1,4 @@
-# github.com/appclacks/go-client v0.0.0-20240602163908-0de41c983ab7
+# github.com/appclacks/go-client v0.0.0-20240715201443-0ce681171dc2
 ## explicit; go 1.22.0
 github.com/appclacks/go-client
 # github.com/beorn7/perks v1.0.1
